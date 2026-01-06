@@ -1,0 +1,38 @@
+extends ../layout
+
+block content
+  h3.mb-4 Add Employee
+
+  form(method="POST", action="/employees/add")
+    .mb-3
+      label.form-label Employee Code
+      input.form-control(type="text", name="employeeCode", required)
+
+    .mb-3
+      label.form-label Name
+      input.form-control(type="text", name="name", required)
+
+    .mb-3
+      label.form-label Email
+      input.form-control(type="email", name="email")
+
+    .mb-3
+      label.form-label Department
+      select.form-select(name="department", required)
+        option(value="DEVELOPER") Developer
+        option(value="TRAINEE") Trainee
+        option(value="TL") TL
+        option(value="MANAGER") Manager
+        option(value="HR") HR
+        option(value="FINANCE") Finance
+        option(value="ADMIN") Admin
+
+    .mb-3
+      label.form-label Branch
+      select.form-select(name="branch", required)
+        option(value="Chennai") Chennai
+        option(value="Coimbatore") Coimbatore
+        option(value="Bangalore") Bangalore
+
+    button.btn.btn-success(type="submit") Save
+    a.btn.btn-secondary.ms-2(href="/employees") Cancel

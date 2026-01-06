@@ -1,0 +1,42 @@
+extends ../layout
+
+block content
+  h3.mb-4 Asset History
+
+  // Asset info
+  .card.mb-3
+    .card-body
+      strong Asset:
+      |  #{asset.uniqueId} - #{asset.model}
+
+  table#historyTable.table.table-bordered.table-striped
+    thead.table-dark
+      tr
+        th Date
+        th Transaction Type
+        th Employee
+        th Reason
+    tbody
+      each tx in history
+        tr
+          td= tx.createdAt.toLocaleString()
+          td= tx.transactionType
+          td
+            if tx.Employee
+              = tx.Employee.name
+            else
+              | -
+          td
+            if tx.reason
+              = tx.reason
+            else
+              | -
+
+  script.
+    $(document).ready(function () {
+      $('#historyTable').DataTable({
+        pageLength: 5,
+        ordering: true,
+        searching: true
+      });
+    });

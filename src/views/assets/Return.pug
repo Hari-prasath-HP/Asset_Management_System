@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+  h3.mb-4 Return Asset
+
+  form(method="POST", action=`/assets/return/${asset.id}`)
+    .mb-3
+      label.form-label Asset
+      input.form-control(
+        type="text",
+        value=`${asset.uniqueId} - ${asset.model}`,
+        readonly
+      )
+
+    .mb-3
+      label.form-label Reason for Return
+      select.form-select(name="reason", required)
+        option(value="") -- Select Reason --
+        option(value="Upgrade") Upgrade
+        option(value="Repair") Repair
+        option(value="Resignation") Resignation
+        option(value="Other") Other
+
+    button.btn.btn-warning(type="submit") Return Asset
+    a.btn.btn-secondary.ms-2(href="/assets") Cancel

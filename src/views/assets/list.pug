@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+  h3.mb-4 Asset List
+
+  table#assetTable.table.table-bordered.table-striped
+    thead.table-dark
+      tr
+        th ID
+        th Unique ID
+        th Serial Number
+        th Model
+        th Status
+        th Assigned To
+        th Actions
+    tbody
+      each asset in assets
+        tr
+          td= asset.id
+          td= asset.uniqueId
+          td= asset.serialNumber
+          td= asset.model
+          td= asset.status
+          td
+            if asset.currentEmployeeId
+              | Employee #{asset.currentEmployeeId}
+            else
+              | -
+          td
+            a.btn.btn-sm.btn-info.me-1(
+                href=`/assets/history/${asset.id}`
+            ) History
+            if asset.status === 'Available'
+              a.btn.btn-sm.btn-primary(
+                href=`/assets/issue/${asset.id}`
+              ) Issue
+            else if asset.status === 'Assigned'
+              a.btn.btn-sm.btn-warning(
+                href=`/assets/return/${asset.id}`
+              ) Return
+            else
+              | -
+
+    
+
+  // DataTables initialization
+  script.
+    $(document).ready(function () {
+      $('#assetTable').DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50],
+        ordering: true,
+        searching: true
+      });
+    });

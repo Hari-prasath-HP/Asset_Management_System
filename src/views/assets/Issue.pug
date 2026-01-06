@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  h3.mb-4 Issue Asset
+
+  form(method="POST", action=`/assets/issue/${asset.id}`)
+    .mb-3
+      label.form-label Asset
+      input.form-control(
+        type="text",
+        value=`${asset.uniqueId} - ${asset.model}`,
+        readonly
+      )
+
+    .mb-3
+      label.form-label Select Employee
+      select.form-select(name="employeeId", required)
+        option(value="") -- Select Employee --
+        each emp in employees
+          option(value=emp.id)= emp.name
+
+    button.btn.btn-primary(type="submit") Issue Asset
+    a.btn.btn-secondary.ms-2(href="/assets") Cancel

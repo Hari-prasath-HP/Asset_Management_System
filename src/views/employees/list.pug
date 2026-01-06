@@ -1,0 +1,61 @@
+extends ../layout
+
+block content
+  h3.mb-4 Employee Master
+
+  .mb-3
+    a.btn.btn-primary(href="/employees/add") Add Employee
+
+  .mb-3
+    select.form-select#statusFilter
+      option(value="all") All Employees
+      option(value="active") Active
+      option(value="inactive") Inactive
+
+  table#employeeTable.table.table-bordered.table-striped
+    thead.table-dark
+      tr
+        th ID
+        th Employee Code
+        th Name
+        th Email
+        th Department
+        th Branch
+        th Status
+    tbody
+      each emp in employees
+        tr(data-status=emp.isActive)
+          td= emp.id
+          td= emp.employeeCode
+          td= emp.name
+          td= emp.email
+          td= emp.department
+          td= emp.branch
+          td
+            if emp.isActive
+              span.badge.bg-success Active
+            else
+              span.badge.bg-secondary Inactive
+
+  script.
+    $(document).ready(function () {
+      const table = $('#employeeTable').DataTable();
+
+      $('#statusFilter').on('change', function () {
+        const value = $(this).val();
+
+        table.rows().every(function () {
+          const status = $(this.node()).data('status');
+
+          if (value === 'all') {
+            $(this.node()).show();
+          } else if (value === 'active' && status === true) {
+            $(this.node()).show();
+          } else if (value === 'inactive' && status === false) {
+            $(this.node()).show();
+          } else {
+            $(this.node()).hide();
+          }
+        });
+      });
+    });
