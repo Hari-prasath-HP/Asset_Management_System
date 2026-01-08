@@ -3,6 +3,9 @@ extends ../layout
 block content
   h3.mb-4 Asset List
 
+  .mb-3.d-flex.justify-content-between
+    a.btn.btn-primary(href="/assets/add") + Add Asset
+
   table#assetTable.table.table-bordered.table-striped
     thead.table-dark
       tr
@@ -28,24 +31,27 @@ block content
               | -
           td
             a.btn.btn-sm.btn-info.me-1(
-                href=`/assets/history/${asset.id}`
+              href=`/assets/history/${asset.id}`
             ) History
+            a.btn.btn-sm.btn-warning(
+              href=`/assets/edit/${asset.id}`
+            ) Edit
             if asset.status === 'Available'
-              a.btn.btn-sm.btn-primary(
+              a.btn.btn-sm.btn-primary.me-1(
                 href=`/assets/issue/${asset.id}`
               ) Issue
             else if asset.status === 'Assigned'
-              a.btn.btn-sm.btn-warning(
+              a.btn.btn-sm.btn-warning.me-1(
                 href=`/assets/return/${asset.id}`
               ) Return
             else
               | -
-
+            
     
 
-  // DataTables initialization
+block scripts
   script.
-    $(document).ready(function () {
+    $(function () {
       $('#assetTable').DataTable({
         pageLength: 5,
         lengthMenu: [5, 10, 25, 50],

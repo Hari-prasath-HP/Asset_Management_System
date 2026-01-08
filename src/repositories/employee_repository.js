@@ -1,30 +1,70 @@
 const { Employee } = require('../models');
 
-// New employe record
-const createEmployee = async (employeeData) => {
-  return Employee.create(employeeData);
-}
+// Create new employee
+const createEmployee=async(data)=>{
+  try {
+    const employee = await Employee.create(data);
+    return employee;
+  } catch (error) {
+    throw error;
+  }
+};
 
-// Fetch all employees
-const getAllEmployees = async () => {
-  return Employee.findAll();
-}
+// Get all employees
+const getAllEmployees=async()=>{
+  try {
+    const employees = await Employee.findAll({
+      order: [['id', 'ASC']]
+    });
 
-// Active only
-const getActiveEmployees = async () => {
-  return Employee.findAll({
-    where: { isActive: true }
-  });
-}
+    return employees;
+  } catch (error) {
+    throw error;
+  }
+};
 
-// Primary key
-const getEmployeeById = async (id) => {
-  return Employee.findByPk(id);
-}
+// Get only active employees
+const getActiveEmployees=async()=>{
+  try {
+    const activeEmployees = await Employee.findAll({
+      where: {
+        isActive: true
+      }
+    });
+
+    return activeEmployees;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Get employee by id
+const getEmployeeById=async(employeeId)=>{
+  try {
+    const employee = await Employee.findByPk(employeeId);
+    return employee;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Update employee details
+const updateEmployee=async(employeeId,data)=>{
+  try {
+    const result = await Employee.update(data, {
+      where: { id: employeeId }
+    });
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = {
   createEmployee,
   getAllEmployees,
   getActiveEmployees,
-  getEmployeeById
-}
+  getEmployeeById,
+  updateEmployee
+};

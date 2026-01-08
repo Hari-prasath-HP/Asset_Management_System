@@ -3,14 +3,14 @@ extends ../layout
 block content
   h3.mb-4 Employee Master
 
-  .mb-3
+  .mb-3.d-flex.gap-2
     a.btn.btn-primary(href="/employees/add") Add Employee
 
-  .mb-3
-    select.form-select#statusFilter
-      option(value="all") All Employees
-      option(value="active") Active
-      option(value="inactive") Inactive
+
+    select#statusFilter.form-select(style="max-width:200px")
+      option(value="") All Employees
+      option(value="Active") Active
+      option(value="Inactive") Inactive
 
   table#employeeTable.table.table-bordered.table-striped
     thead.table-dark
@@ -22,40 +22,45 @@ block content
         th Department
         th Branch
         th Status
+        th Actions
     tbody
       each emp in employees
-        tr(data-status=emp.isActive)
+        tr
           td= emp.id
           td= emp.employeeCode
           td= emp.name
           td= emp.email
           td= emp.department
           td= emp.branch
+          td(data-search=emp.isActive ? 'Active' : 'Inactive')
+            = emp.isActive ? 'Active' : 'Inactive'
           td
-            if emp.isActive
-              span.badge.bg-success Active
-            else
-              span.badge.bg-secondary Inactive
+            a.btn.btn-sm.btn-warning(href=`/employees/edit/${emp.id}`) Edit
 
+block scripts
   script.
-    $(document).ready(function () {
-      const table = $('#employeeTable').DataTable();
+    $(function () {
+      const table = $('#employeeTable').DataTable({
+        searching: true,
+        ordering: false
+      });
+
+      $('#globalSearch').on('input', function () {
+        table.search(this.value).draw();
+      });
 
       $('#statusFilter').on('change', function () {
-        const value = $(this).val();
+        const value = this.value;
 
-        table.rows().every(function () {
-          const status = $(this.node()).data('status');
-
-          if (value === 'all') {
-            $(this.node()).show();
-          } else if (value === 'active' && status === true) {
-            $(this.node()).show();
-          } else if (value === 'inactive' && status === false) {
-            $(this.node()).show();
-          } else {
-            $(this.node()).hide();
-          }
-        });
+        if (value === '') {
+          table.column(6).search('').draw();
+        } else {
+          table
+            .column(6)
+            .search('^' + value + '$', true, false)
+            .draw();
+        }
       });
+
     });
+

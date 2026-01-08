@@ -1,7 +1,7 @@
 module.exports = {
-  DB_NAME: 'asset_management',
-  DB_USER: 'postgres',
-  DB_PASSWORD: 'Post@123',
-  DB_HOST: 'localhost',
-  DB_DIALECT: 'postgres'
+  DB_NAME: process.env.DB_NAME,
+  DB_USER: process.env.DB_USER,
+  DB_PASSWORD: process.env.DB_PASSWORD,
+  DB_HOST: process.env.DB_HOST,
+  DB_DIALECT: process.env.DB_DIALECT
 };

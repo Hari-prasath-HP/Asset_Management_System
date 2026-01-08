@@ -20,6 +20,14 @@ const Asset = Sequelize.define('Asset', {
   model: {
     type: DataTypes.STRING
   },
+  branch:{
+    type: DataTypes.ENUM('Chennai','Coimbatore','Bangalore'),
+    allowNull: false
+    },
+  categoryId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
   status: {
   type: DataTypes.ENUM('Available','Assigned','Service','Scrap'),
   allowNull: false,

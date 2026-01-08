@@ -1,0 +1,86 @@
+extends ../layout
+
+block content
+  h3.mb-4 Edit Asset
+
+  //- Error alert (only shows when error exists)
+  if error
+    .alert.alert-danger= error
+
+  form(method="POST", action=`/assets/edit/${asset.id}`)
+    
+    .mb-3
+      label.form-label Unique ID
+      input.form-control(
+        type="text",
+        name="uniqueId",
+        value=asset.uniqueId,
+        required
+      )
+
+    .mb-3
+      label.form-label Serial Number
+      input.form-control(
+        type="text",
+        name="serialNumber",
+        value=asset.serialNumber,
+        required
+      )
+
+    .mb-3
+      label.form-label Model
+      input.form-control(
+        type="text",
+        name="model",
+        value=asset.model || ''
+      )
+
+    .mb-3
+      label.form-label Branch
+      select.form-select(name="branch" required)
+        option(value="") Select Branch
+        option(
+          value="Chennai",
+          selected=asset.branch === 'Chennai'
+        ) Chennai
+        option(
+          value="Coimbatore",
+          selected=asset.branch === 'Coimbatore'
+        ) Coimbatore
+        option(
+          value="Bangalore",
+          selected=asset.branch === 'Bangalore'
+        ) Bangalore
+
+    .mb-3
+      label.form-label Category
+      select.form-select(name="categoryId" required)
+        option(value="") Select Category
+        each category in categories
+          option(
+            value=category.id,
+            selected=category.id === asset.categoryId
+          ) #{category.name}
+
+    .mb-3
+      label.form-label Status
+      select.form-select(name="status")
+        option(
+          value="Available",
+          selected=asset.status === 'Available'
+        ) Available
+        option(
+          value="Assigned",
+          selected=asset.status === 'Assigned'
+        ) Assigned
+        option(
+          value="Service",
+          selected=asset.status === 'Service'
+        ) Service
+        option(
+          value="Scrap",
+          selected=asset.status === 'Scrap'
+        ) Scrap
+
+    button.btn.btn-success(type="submit") Update
+    a.btn.btn-secondary.ms-2(href="/assets") Cancel

@@ -3,6 +3,10 @@ extends ../layout
 block content
   h3.mb-4 Issue Asset
 
+  //- ✅ Show error only if it exists
+  if error
+    .alert.alert-danger= error
+
   form(method="POST", action=`/assets/issue/${asset.id}`)
     .mb-3
       label.form-label Asset

@@ -1,21 +1,48 @@
 const assetService = require('../services/asset_service');
-const assetRepo = require('../repositories/asset_repository')
+const assetRepo = require('../repositories/asset_repository');
 const employeeRepo = require('../repositories/employee_repository');
-const transactionRepo = require('../repositories/assetTransaction_repository')
+const transactionRepo = require('../repositories/assetTransaction_repository');
+const categoryRepo = require('../repositories/assetCategory_repository');
 
-const renderAssetList = async (req, res) => {
+// Render add asset page
+const getAddAssetPage=async(req, res)=>{
+  try {
+    const categories = await categoryRepo.getAllCategories();
+    res.render('assets/add', { categories });
+  } catch (error) {
+    res.redirect('/assets');
+  }
+};
+
+// Create asset (UI)
+const createAsset=async(req, res)=>{
+  try {
+    await assetService.createAsset(req.body);
+    res.redirect('/assets');
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// Render asset list
+const renderAssetList=async(req, res)=>{
   try {
     const assets = await assetRepo.getAllAssets();
     res.render('assets/list', { assets });
-  } catch (err) {
+  } catch (error) {
     res.status(500).send('Failed to load assets');
   }
 };
 
-// Issue Asset 
-const issueAsset = async (req, res) => {
-    console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
+/*
+  -------- API CONTROLLERS --------
+*/
+
+// Issue asset (API)
+const issueAsset=async(req, res)=>{
   try {
     const { assetId, employeeId } = req.body;
 
@@ -33,9 +60,8 @@ const issueAsset = async (req, res) => {
   }
 };
 
-// Return asset
-
-const returnAsset = async (req, res) => {
+// Return asset (API)
+const returnAsset=async(req, res)=>{
   try {
     const { assetId, reason } = req.body;
 
@@ -53,9 +79,8 @@ const returnAsset = async (req, res) => {
   }
 };
 
-// Asset service
-
-const sendForService = async (req, res) => {
+// Send asset for service (API)
+const sendForService=async(req, res)=>{
   try {
     const { assetId, reason } = req.body;
 
@@ -73,9 +98,8 @@ const sendForService = async (req, res) => {
   }
 };
 
-// Transfer History
-
-const assetHistory = async (req, res) => {
+// Get asset history (API)
+const assetHistory=async(req, res)=>{
   try {
     const { assetId } = req.params;
 
@@ -92,85 +116,169 @@ const assetHistory = async (req, res) => {
     });
   }
 };
-/* Render issue page */
-const renderIssuePage = async (req, res) => {
-  try {
-    const assetId = req.params.id;
 
-    const asset = await assetRepo.getAssetById(assetId);
+/*
+  -------- UI CONTROLLERS --------
+*/
+
+// Render issue page
+const renderIssuePage=async(req, res)=>{
+  try {
+    const asset = await assetRepo.getAssetById(req.params.id);
     const employees = await employeeRepo.getActiveEmployees();
 
     res.render('assets/issue', { asset, employees });
-  } catch (err) {
+  } catch (error) {
     res.status(500).send('Failed to load issue page');
   }
 };
 
-/* Handle issue submit */
-const issueAssetUI = async (req, res) => {
+// Issue asset (UI)
+const issueAssetUI=async(req, res)=>{
   try {
-    const assetId = req.params.id;
-    const { employeeId } = req.body;
-
-    await assetService.issueAsset(assetId, employeeId);
+    await assetService.issueAsset(
+      req.params.id,
+      req.body.employeeId
+    );
 
     res.redirect('/assets');
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    const asset = await assetRepo.getAssetById(req.params.id);
+    const employees = await employeeRepo.getAllEmployees();
+
+    res.render('assets/issue', {
+      asset,
+      employees,
+      error: error.message
+    });
   }
 };
 
-/* Render return page */
-const renderReturnPage = async (req, res) => {
+// Render return page
+const renderReturnPage=async(req, res)=>{
   try {
-    const assetId = req.params.id;
-
-    const asset = await assetRepo.getAssetById(assetId);
-
+    const asset = await assetRepo.getAssetById(req.params.id);
     res.render('assets/return', { asset });
-  } catch (err) {
+  } catch (error) {
     res.status(500).send('Failed to load return page');
   }
 };
 
-/* Handle return submit */
-const returnAssetUI = async (req, res) => {
+// Return asset (UI)
+const returnAssetUI=async(req, res)=>{
   try {
-    const assetId = req.params.id;
-    const { reason } = req.body;
-
-    await assetService.returnAsset(assetId, reason);
+    await assetService.returnAsset(
+      req.params.id,
+      req.body.reason
+    );
 
     res.redirect('/assets');
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 };
 
-/* Render asset history page */
-const renderAssetHistory = async (req, res) => {
+// Render asset history page
+const renderAssetHistory=async(req, res)=>{
   try {
-    const assetId = req.params.id;
-
-    const asset = await assetRepo.getAssetById(assetId);
-    const history = await transactionRepo.getAssetHistory(assetId);
+    const asset = await assetRepo.getAssetById(req.params.id);
+    const history = await transactionRepo.getAssetHistory(req.params.id);
 
     res.render('assets/history', { asset, history });
-  } catch (err) {
+  } catch (error) {
     res.status(500).send('Failed to load asset history');
   }
 };
 
+// Render edit asset page
+const editAsset=async(req, res)=>{
+  try {
+    const asset = await assetRepo.getAssetById(req.params.id);
+    const categories = await categoryRepo.getAllCategories();
+
+    if (!asset) return res.redirect('/assets');
+
+    res.render('assets/edit', {
+      asset,
+      categories,
+      error: null
+    });
+  } catch (error) {
+    res.redirect('/assets');
+  }
+};
+
+// Update asset
+
+const updateAsset=async(req, res)=>{
+  try {
+    const {
+      uniqueId,
+      serialNumber,
+      model,
+      branch,
+      categoryId,
+      status
+    } = req.body;
+
+    if (!uniqueId || !serialNumber || !branch || !categoryId) {
+      const asset = await assetRepo.getAssetById(req.params.id);
+
+      return res.render('assets/edit', {
+        asset,
+        error: 'Required fields are missing'
+      });
+    }
+
+    await assetRepo.updateAsset(req.params.id, {
+      uniqueId,
+      serialNumber,
+      model,
+      branch,
+      categoryId,
+      status
+    });
+
+    res.redirect('/assets');
+  } catch (error) {
+    const asset = await assetRepo.getAssetById(req.params.id);
+
+    res.render('assets/edit', {
+      asset,
+      error: 'Unique ID or Serial Number already exists'
+    });
+  }
+};
+
+// Render stock view
+const renderStockView=async(req, res)=>{
+  try {
+    const stockData = await assetService.getStockViewData();
+
+    res.render('assets/stock', {
+      assets: stockData.assets,
+      branchSummary: stockData.branchSummary,
+      totalAssets: stockData.totalAssets
+    });
+  } catch (error) {
+    res.redirect('/assets');
+  }
+};
 
 module.exports = {
+  getAddAssetPage,
+  createAsset,
+  renderAssetList,
   issueAsset,
   returnAsset,
   sendForService,
   assetHistory,
-  renderAssetList,
   renderIssuePage,
   issueAssetUI,
   renderReturnPage,
   returnAssetUI,
   renderAssetHistory,
+  editAsset,
+  updateAsset,
+  renderStockView
 };

@@ -1,0 +1,52 @@
+extends ../layout
+
+block content
+  h3.mb-4 Add Asset
+
+  form(method="POST", action="/assets/add", class="card p-4 shadow-sm")
+
+    .mb-3
+      label.form-label(for="uniqueId") Unique Asset ID
+      input#uniqueId.form-control(
+        type="text",
+        name="uniqueId",
+        placeholder="eg: AST-1001",
+        required
+      )
+
+    .mb-3
+      label.form-label(for="serialNumber") Serial Number
+      input#serialNumber.form-control(
+        type="text",
+        name="serialNumber",
+        placeholder="eg: SN-1001",
+        required
+      )
+
+    .mb-3
+      label.form-label(for="model") Model / Make
+      input#model.form-control(
+        type="text",
+        name="model",
+        placeholder="eg: Dell Latitude 5430",
+        required
+      )
+
+    .mb-3
+      label.form-label(for="branch") Branch
+      select#branch.form-select(name="branch", required)
+        option(value="") Select Branch
+        option(value="Chennai") Chennai
+        option(value="Coimbatore") Coimbatore
+        option(value="Bangalore") Bangalore
+
+    .mb-3
+      label.form-label(for="categoryId") Asset Category
+      select#categoryId.form-select(name="categoryId", required)
+        option(value="") Select Category
+        each cat in categories
+          option(value=cat.id)= cat.name
+
+    .d-flex.gap-2
+      button.btn.btn-success(type="submit") Save Asset
+      a.btn.btn-secondary(href="/assets") Cancel

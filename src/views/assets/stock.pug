@@ -1,0 +1,36 @@
+extends ../layout
+
+block content
+  h3.mb-4 Stock View – Available Assets
+
+  table.table.table-bordered
+    thead
+      tr
+        th Branch
+        th Category
+        th Unique ID
+        th Serial Number
+        th Model
+        th Status
+
+    tbody
+      each asset in assets
+        tr
+          td= asset.branch
+          td= asset.AssetCategory.name
+          td= asset.uniqueId
+          td= asset.serialNumber
+          td= asset.model
+          td
+            span.badge.bg-success= asset.status
+
+    tfoot
+      tr
+        td(colspan="6")
+          strong Branch-wise Summary
+          ul.mb-1
+            each row in branchSummary
+              li #{row.branch} : #{row.dataValues.count} assets
+          hr
+          p.mb-0
+            strong Total Assets: #{totalAssets}

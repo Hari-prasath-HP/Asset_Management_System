@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  h3.mb-4 Edit Asset Category
+
+  if error
+    .alert.alert-danger= error
+
+
+  form(method="POST", action=`/categories/edit/${category.id}`)
+    .mb-3
+      label.form-label Category Name
+      input.form-control(
+        type="text",
+        name="name",
+        value=category.name,
+        required
+      )
+
+    .mb-3
+      label.form-label Description
+      input.form-control(
+        type="text",
+        name="description",
+        value=category.description
+      )
+
+    button.btn.btn-success(type="submit") Update
+    a.btn.btn-secondary.ms-2(href="/categories") Cancel

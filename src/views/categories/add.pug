@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+  h3.mb-4 Add Asset Category
+
+  if error
+    .alert.alert-danger= error
+
+  form(method="POST", action="/categories/add")
+    .mb-3
+      label.form-label Category Name
+      //- input.form-control(type="text", name="name", required)  
+      input.form-control(type="text",name="name", value=(formData && formData.name) || '',required)
+
+    .mb-3
+      label.form-label Description
+      input.form-control(type="text", name="description",value=(formData && formData.description) || '')
+
+    button.btn.btn-success(type="submit") Save
+    a.btn.btn-secondary.ms-2(href="/categories") Cancel

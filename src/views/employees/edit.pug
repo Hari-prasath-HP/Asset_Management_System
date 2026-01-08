@@ -1,0 +1,60 @@
+extends ../layout
+
+block content
+  h3.mb-4 Edit Employee
+
+  form(method="POST", action=`/employees/edit/${employee.id}`)
+    .mb-3
+      label.form-label Employee Code
+      input.form-control(
+        type="text",
+        name="employeeCode",
+        value=employee.employeeCode,
+        readonly
+      )
+
+    .mb-3
+      label.form-label Name
+      input.form-control(
+        type="text",
+        name="name",
+        value=employee.name,
+        required
+      )
+
+    .mb-3
+      label.form-label Email
+      input.form-control(
+        type="email",
+        name="email",
+        value=employee.email
+      )
+
+    .mb-3
+      label.form-label Department
+      select.form-select(name="department")
+        option(value=employee.department selected)= employee.department
+        option(value="DEVELOPER") Developer
+        option(value="TRAINEE") Trainee
+        option(value="TL") TL
+        option(value="MANAGER") Manager
+        option(value="HR") HR
+        option(value="FINANCE") Finance
+        option(value="ADMIN") Admin
+
+    .mb-3
+      label.form-label Branch
+      select.form-select(name="branch")
+        option(value=employee.branch selected)= employee.branch
+        option(value="Chennai") Chennai
+        option(value="Coimbatore") Coimbatore
+        option(value="Bangalore") Bangalore
+
+    .mb-3
+      label.form-label Status
+      select.form-select(name="isActive")
+        option(value="true" selected=employee.isActive) Active
+        option(value="false" selected=!employee.isActive) Inactive
+
+    button.btn.btn-success(type="submit") Update
+    a.btn.btn-secondary.ms-2(href="/employees") Cancel

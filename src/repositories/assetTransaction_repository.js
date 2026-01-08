@@ -1,22 +1,35 @@
 const { AssetTransaction, Employee } = require('../models');
 
-// create new transaction
-const createTransaction = async (transactionData) => {
-  return AssetTransaction.create(transactionData);
+// Create new asset transaction
+const createTransaction=async(data)=>{
+  try {
+    const transaction = await AssetTransaction.create(data);
+    return transaction;
+  } catch (error) {
+    throw error;
+  }
 };
 
-// asset history with employee info
-const getAssetHistory = async (assetId) => {
-  return AssetTransaction.findAll({
-    where: { assetId },
-    include: [
-      {
-        model: Employee,
-        attributes: ['id', 'name']
-      }
-    ],
-    order: [['createdAt', 'ASC']]
-  });
+// Get asset transaction history with employee details
+const getAssetHistory=async(assetId)=>{
+  try {
+    const transactions = await AssetTransaction.findAll({
+      where: {
+        assetId: assetId
+      },
+      include: [
+        {
+          model: Employee,
+          attributes: ['id', 'name']
+        }
+      ],
+      order: [['createdAt', 'ASC']]
+    });
+
+    return transactions;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

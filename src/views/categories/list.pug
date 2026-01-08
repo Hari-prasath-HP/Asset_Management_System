@@ -1,0 +1,30 @@
+extends ../layout
+
+block content
+  h3.mb-4 Asset Category Master
+
+  .mb-3
+    a.btn.btn-primary(href="/categories/add") Add Category
+
+  table#categoryTable.table.table-bordered.table-striped
+    thead.table-dark
+      tr
+        th ID
+        th Name
+        th Description
+        th Actions
+    tbody
+      each cat in categories
+        tr
+          td= cat.id
+          td= cat.name
+          td= cat.description || '-'
+          td
+            a.btn.btn-sm.btn-warning(
+              href=`/categories/edit/${cat.id}`
+            ) Edit
+
+  script.
+    $(document).ready(function () {
+      $('#categoryTable').DataTable();
+    });
